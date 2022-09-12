@@ -440,341 +440,341 @@ fn shrink_unchanged_at_ends<'a>(
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::{
-        parse::guess_language,
-        parse::tree_sitter_parser::{from_language, parse},
-        parse::syntax::init_all_info,
-    };
-    use typed_arena::Arena;
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//     use crate::{
+//         parse::guess_language,
+//         parse::tree_sitter_parser::{from_language, parse},
+//         parse::syntax::init_all_info,
+//     };
+//     use typed_arena::Arena;
 
-    #[test]
-    fn test_shrink_unchanged_at_start() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_shrink_unchanged_at_start() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        let lhs_nodes = parse(&arena, "unchanged A B", &config);
-        let rhs_nodes = parse(&arena, "unchanged X", &config);
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         let lhs_nodes = parse(&arena, "unchanged A B", &config);
+//         let rhs_nodes = parse(&arena, "unchanged X", &config);
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        let mut change_map = ChangeMap::default();
-        let (_, lhs_after_skip, rhs_after_skip) =
-            shrink_unchanged_at_ends(&lhs_nodes, &rhs_nodes, &mut change_map);
+//         let mut change_map = ChangeMap::default();
+//         let (_, lhs_after_skip, rhs_after_skip) =
+//             shrink_unchanged_at_ends(&lhs_nodes, &rhs_nodes, &mut change_map);
 
-        assert_eq!(
-            change_map.get(lhs_nodes[0]),
-            Some(ChangeKind::Unchanged(rhs_nodes[0]))
-        );
-        assert_eq!(
-            change_map.get(rhs_nodes[0]),
-            Some(ChangeKind::Unchanged(lhs_nodes[0]))
-        );
+//         assert_eq!(
+//             change_map.get(lhs_nodes[0]),
+//             Some(ChangeKind::Unchanged(rhs_nodes[0]))
+//         );
+//         assert_eq!(
+//             change_map.get(rhs_nodes[0]),
+//             Some(ChangeKind::Unchanged(lhs_nodes[0]))
+//         );
 
-        assert_eq!(lhs_after_skip.len(), 2);
-        assert_eq!(rhs_after_skip.len(), 1);
-    }
+//         assert_eq!(lhs_after_skip.len(), 2);
+//         assert_eq!(rhs_after_skip.len(), 1);
+//     }
 
-    #[test]
-    fn test_shrink_unchanged_at_end() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_shrink_unchanged_at_end() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        let lhs_nodes = parse(&arena, "A B unchanged", &config);
-        let rhs_nodes = parse(&arena, "X unchanged", &config);
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         let lhs_nodes = parse(&arena, "A B unchanged", &config);
+//         let rhs_nodes = parse(&arena, "X unchanged", &config);
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        let mut change_map = ChangeMap::default();
-        let (_, lhs_after_skip, rhs_after_skip) =
-            shrink_unchanged_at_ends(&lhs_nodes, &rhs_nodes, &mut change_map);
+//         let mut change_map = ChangeMap::default();
+//         let (_, lhs_after_skip, rhs_after_skip) =
+//             shrink_unchanged_at_ends(&lhs_nodes, &rhs_nodes, &mut change_map);
 
-        assert_eq!(
-            change_map.get(lhs_nodes[2]),
-            Some(ChangeKind::Unchanged(rhs_nodes[1]))
-        );
-        assert_eq!(
-            change_map.get(rhs_nodes[1]),
-            Some(ChangeKind::Unchanged(lhs_nodes[2]))
-        );
+//         assert_eq!(
+//             change_map.get(lhs_nodes[2]),
+//             Some(ChangeKind::Unchanged(rhs_nodes[1]))
+//         );
+//         assert_eq!(
+//             change_map.get(rhs_nodes[1]),
+//             Some(ChangeKind::Unchanged(lhs_nodes[2]))
+//         );
 
-        assert_eq!(lhs_after_skip.len(), 2);
-        assert_eq!(rhs_after_skip.len(), 1);
-    }
+//         assert_eq!(lhs_after_skip.len(), 2);
+//         assert_eq!(rhs_after_skip.len(), 1);
+//     }
 
-    #[test]
-    fn test_shrink_unchanged_nested() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_shrink_unchanged_nested() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        let lhs_nodes = parse(&arena, "unchanged-before (more-unchanged (A))", &config);
-        let rhs_nodes = parse(&arena, "unchanged-before (more-unchanged (B))", &config);
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         let lhs_nodes = parse(&arena, "unchanged-before (more-unchanged (A))", &config);
+//         let rhs_nodes = parse(&arena, "unchanged-before (more-unchanged (B))", &config);
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        let mut change_map = ChangeMap::default();
-        let (_, lhs_after_skip, rhs_after_skip) =
-            shrink_unchanged_at_ends(&lhs_nodes, &rhs_nodes, &mut change_map);
+//         let mut change_map = ChangeMap::default();
+//         let (_, lhs_after_skip, rhs_after_skip) =
+//             shrink_unchanged_at_ends(&lhs_nodes, &rhs_nodes, &mut change_map);
 
-        // The only possibly changed nodes are inside the lists.
-        assert_eq!(lhs_after_skip.len(), 1);
-        assert!(matches!(lhs_after_skip[0], Syntax::List { .. }));
+//         // The only possibly changed nodes are inside the lists.
+//         assert_eq!(lhs_after_skip.len(), 1);
+//         assert!(matches!(lhs_after_skip[0], Syntax::List { .. }));
 
-        assert_eq!(rhs_after_skip.len(), 1);
-        assert!(matches!(rhs_after_skip[0], Syntax::List { .. }));
+//         assert_eq!(rhs_after_skip.len(), 1);
+//         assert!(matches!(rhs_after_skip[0], Syntax::List { .. }));
 
-        // The inner items haven't had their change set yet.
-        assert_eq!(change_map.get(lhs_after_skip[0]), None);
-        assert_eq!(change_map.get(rhs_after_skip[0]), None);
-    }
+//         // The inner items haven't had their change set yet.
+//         assert_eq!(change_map.get(lhs_after_skip[0]), None);
+//         assert_eq!(change_map.get(rhs_after_skip[0]), None);
+//     }
 
-    #[test]
-    fn test_split_unchanged_toplevel_at_start() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_split_unchanged_toplevel_at_start() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        // Make sure that the initial unchanged node exceeds TINY_TREE_THRESHOLD.
-        let lhs_nodes = parse(&arena, "(unchanged (1 2 3 4 5 6 7 8 9 10)) A B", &config);
-        let rhs_nodes = parse(&arena, "(unchanged (1 2 3 4 5 6 7 8 9 10)) X", &config);
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         // Make sure that the initial unchanged node exceeds TINY_TREE_THRESHOLD.
+//         let lhs_nodes = parse(&arena, "(unchanged (1 2 3 4 5 6 7 8 9 10)) A B", &config);
+//         let rhs_nodes = parse(&arena, "(unchanged (1 2 3 4 5 6 7 8 9 10)) X", &config);
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        let mut change_map = ChangeMap::default();
-        let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
+//         let mut change_map = ChangeMap::default();
+//         let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
 
-        assert_eq!(res.len(), 1);
-        let (lhs_after_skip, rhs_after_skip) = &res[0];
+//         assert_eq!(res.len(), 1);
+//         let (lhs_after_skip, rhs_after_skip) = &res[0];
 
-        assert_eq!(
-            change_map.get(lhs_nodes[0]),
-            Some(ChangeKind::Unchanged(rhs_nodes[0]))
-        );
-        assert_eq!(
-            change_map.get(rhs_nodes[0]),
-            Some(ChangeKind::Unchanged(lhs_nodes[0]))
-        );
+//         assert_eq!(
+//             change_map.get(lhs_nodes[0]),
+//             Some(ChangeKind::Unchanged(rhs_nodes[0]))
+//         );
+//         assert_eq!(
+//             change_map.get(rhs_nodes[0]),
+//             Some(ChangeKind::Unchanged(lhs_nodes[0]))
+//         );
 
-        assert_eq!(lhs_after_skip.len(), 2);
-        assert_eq!(rhs_after_skip.len(), 1);
-    }
+//         assert_eq!(lhs_after_skip.len(), 2);
+//         assert_eq!(rhs_after_skip.len(), 1);
+//     }
 
-    #[test]
-    fn test_split_unchanged_toplevel_at_end() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_split_unchanged_toplevel_at_end() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        let lhs_nodes = parse(&arena, "A B (unchanged (1 2 3 4 5 6 7 8 9 10))", &config);
-        let rhs_nodes = parse(&arena, "X (unchanged (1 2 3 4 5 6 7 8 9 10))", &config);
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         let lhs_nodes = parse(&arena, "A B (unchanged (1 2 3 4 5 6 7 8 9 10))", &config);
+//         let rhs_nodes = parse(&arena, "X (unchanged (1 2 3 4 5 6 7 8 9 10))", &config);
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        let mut change_map = ChangeMap::default();
-        let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
+//         let mut change_map = ChangeMap::default();
+//         let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
 
-        assert_eq!(res.len(), 1);
-        let (lhs_after_skip, rhs_after_skip) = &res[0];
+//         assert_eq!(res.len(), 1);
+//         let (lhs_after_skip, rhs_after_skip) = &res[0];
 
-        assert_eq!(
-            change_map.get(lhs_nodes[2]),
-            Some(ChangeKind::Unchanged(rhs_nodes[1]))
-        );
-        assert_eq!(
-            change_map.get(rhs_nodes[1]),
-            Some(ChangeKind::Unchanged(lhs_nodes[2]))
-        );
+//         assert_eq!(
+//             change_map.get(lhs_nodes[2]),
+//             Some(ChangeKind::Unchanged(rhs_nodes[1]))
+//         );
+//         assert_eq!(
+//             change_map.get(rhs_nodes[1]),
+//             Some(ChangeKind::Unchanged(lhs_nodes[2]))
+//         );
 
-        assert_eq!(lhs_after_skip.len(), 2);
-        assert_eq!(rhs_after_skip.len(), 1);
-    }
+//         assert_eq!(lhs_after_skip.len(), 2);
+//         assert_eq!(rhs_after_skip.len(), 1);
+//     }
 
-    #[test]
-    fn test_split_preserves_outer_delimiters() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_split_preserves_outer_delimiters() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        let lhs_nodes = parse(&arena, "(A)", &config);
-        let rhs_nodes = parse(&arena, "(B)", &config);
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         let lhs_nodes = parse(&arena, "(A)", &config);
+//         let rhs_nodes = parse(&arena, "(B)", &config);
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        let mut change_map = ChangeMap::default();
-        let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
+//         let mut change_map = ChangeMap::default();
+//         let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
 
-        assert_eq!(res.len(), 1);
-        let (lhs_after_skip, rhs_after_skip) = &res[0];
+//         assert_eq!(res.len(), 1);
+//         let (lhs_after_skip, rhs_after_skip) = &res[0];
 
-        // The only possibly changed nodes are inside the lists.
-        assert_eq!(lhs_after_skip.len(), 1);
-        assert!(matches!(lhs_after_skip[0], Syntax::List { .. }));
+//         // The only possibly changed nodes are inside the lists.
+//         assert_eq!(lhs_after_skip.len(), 1);
+//         assert!(matches!(lhs_after_skip[0], Syntax::List { .. }));
 
-        assert_eq!(rhs_after_skip.len(), 1);
-        assert!(matches!(rhs_after_skip[0], Syntax::List { .. }));
+//         assert_eq!(rhs_after_skip.len(), 1);
+//         assert!(matches!(rhs_after_skip[0], Syntax::List { .. }));
 
-        // The outer list delimiters don't have their change set yet.
-        assert_eq!(change_map.get(lhs_nodes[0]), None);
-        assert_eq!(change_map.get(rhs_nodes[0]), None);
-    }
+//         // The outer list delimiters don't have their change set yet.
+//         assert_eq!(change_map.get(lhs_nodes[0]), None);
+//         assert_eq!(change_map.get(rhs_nodes[0]), None);
+//     }
 
-    #[test]
-    fn test_split_unchanged_middle() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_split_unchanged_middle() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        let lhs_nodes = parse(
-            &arena,
-            "novel-lhs (unchanged (1 2 3 4 5 6 7 8 9 10)) novel-lhs-2",
-            &config,
-        );
-        let rhs_nodes = parse(
-            &arena,
-            "novel-rhs (unchanged (1 2 3 4 5 6 7 8 9 10)) novel-rhs-2",
-            &config,
-        );
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         let lhs_nodes = parse(
+//             &arena,
+//             "novel-lhs (unchanged (1 2 3 4 5 6 7 8 9 10)) novel-lhs-2",
+//             &config,
+//         );
+//         let rhs_nodes = parse(
+//             &arena,
+//             "novel-rhs (unchanged (1 2 3 4 5 6 7 8 9 10)) novel-rhs-2",
+//             &config,
+//         );
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        let mut change_map = ChangeMap::default();
-        let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
-        assert_eq!(
-            res,
-            vec![
-                (vec![lhs_nodes[0]], vec![rhs_nodes[0]]),
-                (vec![lhs_nodes[2]], vec![rhs_nodes[2]])
-            ]
-        );
+//         let mut change_map = ChangeMap::default();
+//         let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
+//         assert_eq!(
+//             res,
+//             vec![
+//                 (vec![lhs_nodes[0]], vec![rhs_nodes[0]]),
+//                 (vec![lhs_nodes[2]], vec![rhs_nodes[2]])
+//             ]
+//         );
 
-        assert_eq!(
-            change_map.get(lhs_nodes[1]),
-            Some(ChangeKind::Unchanged(rhs_nodes[1]))
-        );
-        assert_eq!(
-            change_map.get(rhs_nodes[1]),
-            Some(ChangeKind::Unchanged(lhs_nodes[1]))
-        );
-    }
+//         assert_eq!(
+//             change_map.get(lhs_nodes[1]),
+//             Some(ChangeKind::Unchanged(rhs_nodes[1]))
+//         );
+//         assert_eq!(
+//             change_map.get(rhs_nodes[1]),
+//             Some(ChangeKind::Unchanged(lhs_nodes[1]))
+//         );
+//     }
 
-    #[test]
-    fn test_split_unchanged_multiple() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_split_unchanged_multiple() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        let lhs_nodes = parse(
-            &arena,
-            "novel-lhs (unchanged-1 (1 2 3 4 5 6 7 8 9 10)) (unchanged-2 (1 2 3 4 5 6 7 8 9 10)) novel-lhs-2",
-            &config,
-        );
-        let rhs_nodes = parse(
-            &arena,
-            "novel-rhs (unchanged-1 (1 2 3 4 5 6 7 8 9 10)) (unchanged-2 (1 2 3 4 5 6 7 8 9 10)) novel-rhs-2",
-            &config,
-        );
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         let lhs_nodes = parse(
+//             &arena,
+//             "novel-lhs (unchanged-1 (1 2 3 4 5 6 7 8 9 10)) (unchanged-2 (1 2 3 4 5 6 7 8 9 10)) novel-lhs-2",
+//             &config,
+//         );
+//         let rhs_nodes = parse(
+//             &arena,
+//             "novel-rhs (unchanged-1 (1 2 3 4 5 6 7 8 9 10)) (unchanged-2 (1 2 3 4 5 6 7 8 9 10)) novel-rhs-2",
+//             &config,
+//         );
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        let mut change_map = ChangeMap::default();
-        let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
-        assert_eq!(
-            res,
-            vec![
-                (vec![lhs_nodes[0]], vec![rhs_nodes[0]]),
-                (vec![lhs_nodes[3]], vec![rhs_nodes[3]])
-            ]
-        );
-    }
+//         let mut change_map = ChangeMap::default();
+//         let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
+//         assert_eq!(
+//             res,
+//             vec![
+//                 (vec![lhs_nodes[0]], vec![rhs_nodes[0]]),
+//                 (vec![lhs_nodes[3]], vec![rhs_nodes[3]])
+//             ]
+//         );
+//     }
 
-    #[test]
-    fn test_split_unchanged_outer_delimiter() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_split_unchanged_outer_delimiter() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        let lhs_nodes = parse(
-            &arena,
-            "(novel-lhs-before (1 2 3 4 5 6 7 8 9 10) novel-lhs-after)",
-            &config,
-        );
-        let rhs_nodes = parse(
-            &arena,
-            "(novel-rhs-before (1 2 3 4 5 6 7 8 9 10) novel-rhs-after)",
-            &config,
-        );
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         let lhs_nodes = parse(
+//             &arena,
+//             "(novel-lhs-before (1 2 3 4 5 6 7 8 9 10) novel-lhs-after)",
+//             &config,
+//         );
+//         let rhs_nodes = parse(
+//             &arena,
+//             "(novel-rhs-before (1 2 3 4 5 6 7 8 9 10) novel-rhs-after)",
+//             &config,
+//         );
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        let mut change_map = ChangeMap::default();
-        let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
-        assert_eq!(res.len(), 2);
+//         let mut change_map = ChangeMap::default();
+//         let res = split_unchanged(&lhs_nodes, &rhs_nodes, &mut change_map);
+//         assert_eq!(res.len(), 2);
 
-        assert_eq!(
-            change_map.get(lhs_nodes[0]),
-            Some(ChangeKind::Unchanged(rhs_nodes[0]))
-        );
-    }
+//         assert_eq!(
+//             change_map.get(lhs_nodes[0]),
+//             Some(ChangeKind::Unchanged(rhs_nodes[0]))
+//         );
+//     }
 
-    #[test]
-    fn test_split_mostly_unchanged_toplevel() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_split_mostly_unchanged_toplevel() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        let lhs_nodes = parse(
-            &arena,
-            "(1 2 3 4 5 6 7 8 9 10) (91 92 93 94 95 96 97 98 99 100)",
-            &config,
-        );
-        let rhs_nodes = parse(
-            &arena,
-            "(1 2 3 4 5 novel-1 6 7 8 9 10) (91 92 93 94 95 novel-2 96 97 98 99 100)",
-            &config,
-        );
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         let lhs_nodes = parse(
+//             &arena,
+//             "(1 2 3 4 5 6 7 8 9 10) (91 92 93 94 95 96 97 98 99 100)",
+//             &config,
+//         );
+//         let rhs_nodes = parse(
+//             &arena,
+//             "(1 2 3 4 5 novel-1 6 7 8 9 10) (91 92 93 94 95 novel-2 96 97 98 99 100)",
+//             &config,
+//         );
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        let split = split_mostly_unchanged_toplevel(&lhs_nodes, &rhs_nodes);
-        assert_eq!(split.len(), 2);
-    }
+//         let split = split_mostly_unchanged_toplevel(&lhs_nodes, &rhs_nodes);
+//         assert_eq!(split.len(), 2);
+//     }
 
-    #[test]
-    fn test_count_common_unique() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_count_common_unique() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        // There are two subtrees that are unique on both sides and
-        // shared between the two sides here:
-        //
-        // 1: shared-1
-        // 2: (shared-2a shared-2b)
-        let lhs_nodes = parse(
-            &arena,
-            "(shared-1 (shared-2a shared-2b) not-unique not-unique)",
-            &config,
-        );
-        let rhs_nodes = parse(
-            &arena,
-            "(shared-1 (shared-2a shared-2b) not-unique)",
-            &config,
-        );
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         // There are two subtrees that are unique on both sides and
+//         // shared between the two sides here:
+//         //
+//         // 1: shared-1
+//         // 2: (shared-2a shared-2b)
+//         let lhs_nodes = parse(
+//             &arena,
+//             "(shared-1 (shared-2a shared-2b) not-unique not-unique)",
+//             &config,
+//         );
+//         let rhs_nodes = parse(
+//             &arena,
+//             "(shared-1 (shared-2a shared-2b) not-unique)",
+//             &config,
+//         );
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        assert_eq!(count_common_unique(lhs_nodes[0], rhs_nodes[0]), 2);
-    }
+//         assert_eq!(count_common_unique(lhs_nodes[0], rhs_nodes[0]), 2);
+//     }
 
-    #[test]
-    fn test_similar_with_common_grandchildren() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//     #[test]
+//     fn test_similar_with_common_grandchildren() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        let lhs_nodes = parse(&arena, "((novel-lhs 1 2 3 4 5)) x", &config);
-        let rhs_nodes = parse(&arena, "((novel-rhs 1 2 3 4 5)) y", &config);
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         let lhs_nodes = parse(&arena, "((novel-lhs 1 2 3 4 5)) x", &config);
+//         let rhs_nodes = parse(&arena, "((novel-rhs 1 2 3 4 5)) y", &config);
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        assert_eq!(
-            split_mostly_unchanged_toplevel(&lhs_nodes, &rhs_nodes).len(),
-            2
-        );
-    }
-    #[test]
-    fn test_similar_ignore_delimiter() {
-        let arena = Arena::new();
-        let config = from_language(guess_language::Language::EmacsLisp);
+//         assert_eq!(
+//             split_mostly_unchanged_toplevel(&lhs_nodes, &rhs_nodes).len(),
+//             2
+//         );
+//     }
+//     #[test]
+//     fn test_similar_ignore_delimiter() {
+//         let arena = Arena::new();
+//         let config = from_language(guess_language::Language::EmacsLisp);
 
-        let lhs_nodes = parse(&arena, "(novel-lhs 1 2 3 4 5) x", &config);
-        let rhs_nodes = parse(&arena, "[novel-rhs 1 2 3 4 5] y", &config);
-        init_all_info(&lhs_nodes, &rhs_nodes);
+//         let lhs_nodes = parse(&arena, "(novel-lhs 1 2 3 4 5) x", &config);
+//         let rhs_nodes = parse(&arena, "[novel-rhs 1 2 3 4 5] y", &config);
+//         init_all_info(&lhs_nodes, &rhs_nodes);
 
-        assert_eq!(
-            split_mostly_unchanged_toplevel(&lhs_nodes, &rhs_nodes).len(),
-            2
-        );
-    }
-}
+//         assert_eq!(
+//             split_mostly_unchanged_toplevel(&lhs_nodes, &rhs_nodes).len(),
+//             2
+//         );
+//     }
+// }

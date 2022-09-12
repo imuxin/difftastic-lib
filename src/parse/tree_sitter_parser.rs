@@ -40,53 +40,54 @@ pub struct TreeSitterConfig {
 }
 
 extern "C" {
-    fn tree_sitter_bash() -> ts::Language;
-    fn tree_sitter_c() -> ts::Language;
-    fn tree_sitter_c_sharp() -> ts::Language;
-    fn tree_sitter_clojure() -> ts::Language;
-    fn tree_sitter_cmake() -> ts::Language;
-    fn tree_sitter_cpp() -> ts::Language;
-    fn tree_sitter_commonlisp() -> ts::Language;
-    fn tree_sitter_css() -> ts::Language;
-    fn tree_sitter_dart() -> ts::Language;
-    fn tree_sitter_elisp() -> ts::Language;
-    fn tree_sitter_elixir() -> ts::Language;
-    fn tree_sitter_elm() -> ts::Language;
-    fn tree_sitter_elvish() -> ts::Language;
-    fn tree_sitter_gleam() -> ts::Language;
-    fn tree_sitter_go() -> ts::Language;
-    fn tree_sitter_hack() -> ts::Language;
-    fn tree_sitter_haskell() -> ts::Language;
-    fn tree_sitter_hcl() -> ts::Language;
-    fn tree_sitter_html() -> ts::Language;
-    fn tree_sitter_janet_simple() -> ts::Language;
-    fn tree_sitter_java() -> ts::Language;
-    fn tree_sitter_javascript() -> ts::Language;
-    fn tree_sitter_json() -> ts::Language;
-    fn tree_sitter_julia() -> ts::Language;
-    fn tree_sitter_kotlin() -> ts::Language;
-    fn tree_sitter_lua() -> ts::Language;
-    fn tree_sitter_make() -> ts::Language;
-    fn tree_sitter_nix() -> ts::Language;
-    fn tree_sitter_ocaml() -> ts::Language;
-    fn tree_sitter_ocaml_interface() -> ts::Language;
-    fn tree_sitter_php() -> ts::Language;
-    fn tree_sitter_perl() -> ts::Language;
-    fn tree_sitter_python() -> ts::Language;
-    fn tree_sitter_qmljs() -> ts::Language;
-    fn tree_sitter_ruby() -> ts::Language;
-    fn tree_sitter_rust() -> ts::Language;
-    fn tree_sitter_scala() -> ts::Language;
-    fn tree_sitter_sql() -> ts::Language;
-    fn tree_sitter_swift() -> ts::Language;
-    fn tree_sitter_toml() -> ts::Language;
-    fn tree_sitter_tsx() -> ts::Language;
-    fn tree_sitter_typescript() -> ts::Language;
+    // fn tree_sitter_bash() -> ts::Language;
+    // fn tree_sitter_c() -> ts::Language;
+    // fn tree_sitter_c_sharp() -> ts::Language;
+    // fn tree_sitter_clojure() -> ts::Language;
+    // fn tree_sitter_cmake() -> ts::Language;
+    // fn tree_sitter_cpp() -> ts::Language;
+    // fn tree_sitter_commonlisp() -> ts::Language;
+    // fn tree_sitter_css() -> ts::Language;
+    // fn tree_sitter_dart() -> ts::Language;
+    // fn tree_sitter_elisp() -> ts::Language;
+    // fn tree_sitter_elixir() -> ts::Language;
+    // fn tree_sitter_elm() -> ts::Language;
+    // fn tree_sitter_elvish() -> ts::Language;
+    // fn tree_sitter_gleam() -> ts::Language;
+    // fn tree_sitter_go() -> ts::Language;
+    // fn tree_sitter_hack() -> ts::Language;
+    // fn tree_sitter_haskell() -> ts::Language;
+    // fn tree_sitter_hcl() -> ts::Language;
+    // fn tree_sitter_html() -> ts::Language;
+    // fn tree_sitter_janet_simple() -> ts::Language;
+    // fn tree_sitter_java() -> ts::Language;
+    // fn tree_sitter_javascript() -> ts::Language;
+    // fn tree_sitter_json() -> ts::Language;
+    // fn tree_sitter_julia() -> ts::Language;
+    // fn tree_sitter_kotlin() -> ts::Language;
+    // fn tree_sitter_lua() -> ts::Language;
+    // fn tree_sitter_make() -> ts::Language;
+    // fn tree_sitter_nix() -> ts::Language;
+    // fn tree_sitter_ocaml() -> ts::Language;
+    // fn tree_sitter_ocaml_interface() -> ts::Language;
+    // fn tree_sitter_php() -> ts::Language;
+    // fn tree_sitter_perl() -> ts::Language;
+    // fn tree_sitter_python() -> ts::Language;
+    // fn tree_sitter_qmljs() -> ts::Language;
+    // fn tree_sitter_ruby() -> ts::Language;
+    // fn tree_sitter_rust() -> ts::Language;
+    // fn tree_sitter_scala() -> ts::Language;
+    // fn tree_sitter_sql() -> ts::Language;
+    // fn tree_sitter_swift() -> ts::Language;
+    // fn tree_sitter_toml() -> ts::Language;
+    // fn tree_sitter_tsx() -> ts::Language;
+    // fn tree_sitter_typescript() -> ts::Language;
     fn tree_sitter_yaml() -> ts::Language;
-    fn tree_sitter_zig() -> ts::Language;
+    // fn tree_sitter_zig() -> ts::Language;
 }
 
 // TODO: begin/end and object/end.
+#[allow(dead_code)]
 const OCAML_ATOM_NODES: [&str; 6] = [
     "character",
     "string",
@@ -99,657 +100,657 @@ const OCAML_ATOM_NODES: [&str; 6] = [
 pub fn from_language(language: guess::Language) -> TreeSitterConfig {
     use guess::Language::*;
     match language {
-        Bash => {
-            let language = unsafe { tree_sitter_bash() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string", "raw_string", "heredoc_body"]
-                    .into_iter()
-                    .collect(),
-                delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/bash.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        C => {
-            let language = unsafe { tree_sitter_c() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string_literal", "char_literal"].into_iter().collect(),
-                delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/c.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        CPlusPlus => {
-            let language = unsafe { tree_sitter_cpp() };
-            TreeSitterConfig {
-                language,
-                // The C++ grammar extends the C grammar, so the node
-                // names are generally the same.
-                atom_nodes: vec!["string_literal", "char_literal"].into_iter().collect(),
-                delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]"), ("<", ">")],
-                highlight_query: ts::Query::new(
-                    language,
-                    concat!(
-                        include_str!("../../vendor/highlights/c.scm"),
-                        include_str!("../../vendor/highlights/cpp.scm")
-                    ),
-                )
-                .unwrap(),
-            }
-        }
-        Clojure => {
-            let language = unsafe { tree_sitter_clojure() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec![].into_iter().collect(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]")]
-                    .into_iter()
-                    .collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/clojure.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        CMake => {
-            let language = unsafe { tree_sitter_cmake() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["argument"].into_iter().collect(),
-                delimiter_tokens: vec![("(", ")")].into_iter().collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/cmake.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        CommonLisp => {
-            let language = unsafe { tree_sitter_commonlisp() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["str_lit", "char_lit"].into_iter().collect(),
-                delimiter_tokens: vec![("(", ")")],
-                highlight_query: ts::Query::new(language, "").unwrap(),
-            }
-        }
-        CSharp => {
-            let language = unsafe { tree_sitter_c_sharp() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec![
-                    "string_literal",
-                    "verbatim_string_literal",
-                    "character_literal",
-                ]
-                .into_iter()
-                .collect(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/c-sharp.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Css => {
-            let language = unsafe { tree_sitter_css() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["integer_value", "float_value"].into_iter().collect(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/css.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Dart => {
-            let language = unsafe { tree_sitter_dart() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string_literal", "script_tag"].into_iter().collect(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("<", ">")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/dart.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        EmacsLisp => {
-            let language = unsafe { tree_sitter_elisp() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec![].into_iter().collect(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]")]
-                    .into_iter()
-                    .collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/elisp.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Elixir => {
-            let language = unsafe { tree_sitter_elixir() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string", "heredoc"].into_iter().collect(),
-                delimiter_tokens: vec![("(", ")"), ("{", "}"), ("do", "end")]
-                    .into_iter()
-                    .collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/elixir.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Elm => {
-            let language = unsafe { tree_sitter_elm() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string_constant_expr"].into_iter().collect(),
-                delimiter_tokens: vec![("{", "}"), ("[", "]"), ("(", ")")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/elm.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Elvish => {
-            let language = unsafe { tree_sitter_elvish() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: [].into(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("|", "|")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/elvish.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Gleam => {
-            let language = unsafe { tree_sitter_gleam() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: ["string"].into(),
-                delimiter_tokens: vec![("(", ")"), ("[", "]"), ("{", "}")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/gleam.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Go => {
-            let language = unsafe { tree_sitter_go() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["interpreted_string_literal", "raw_string_literal"]
-                    .into_iter()
-                    .collect(),
-                delimiter_tokens: vec![("{", "}"), ("[", "]"), ("(", ")")]
-                    .into_iter()
-                    .collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/go.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Hack => {
-            let language = unsafe { tree_sitter_hack() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["prefixed_string", "heredoc"].into_iter().collect(),
-                delimiter_tokens: vec![("[", "]"), ("(", ")"), ("<", ">"), ("{", "}")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/hack.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Haskell => {
-            let language = unsafe { tree_sitter_haskell() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec![].into_iter().collect(),
-                delimiter_tokens: vec![("[", "]"), ("(", ")")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/haskell.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Hcl => {
-            let language = unsafe { tree_sitter_hcl() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string_lit", "heredoc_template"].into_iter().collect(),
-                delimiter_tokens: vec![
-                    ("[", "]"),
-                    ("(", ")"),
-                    ("{", "}"),
-                    ("%{", "}"),
-                    ("%{~", "~}"),
-                    ("${", "}"),
-                ],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/hcl.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Html => {
-            let language = unsafe { tree_sitter_html() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec![
-                    "quoted_attribute_value",
-                    "comment",
-                    "raw_text",
-                    "tag_name",
-                    "text",
-                ]
-                .into_iter()
-                .collect(),
-                delimiter_tokens: vec![("<", ">"), ("<!", ">"), ("<!--", "-->")]
-                    .into_iter()
-                    .collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/html.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Janet => {
-            let language = unsafe { tree_sitter_janet_simple() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec![].into_iter().collect(),
-                delimiter_tokens: vec![
-                    ("@{", "}"),
-                    ("@(", ")"),
-                    ("@[", "]"),
-                    ("{", "}"),
-                    ("(", ")"),
-                    ("[", "]"),
-                ]
-                .into_iter()
-                .collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/janet_simple.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Java => {
-            let language = unsafe { tree_sitter_java() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec![].into_iter().collect(),
-                delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/java.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        JavaScript | Jsx => {
-            let language = unsafe { tree_sitter_javascript() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string", "template_string", "regex"]
-                    .into_iter()
-                    .collect(),
-                delimiter_tokens: vec![
-                    ("[", "]"),
-                    ("(", ")"),
-                    ("{", "}"),
-                    // We may see a standalone < token in an expression
-                    // like 1 < 2, but we should never see both a < and a
-                    // > at the same level in JSX.
-                    ("<", ">"),
-                ],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/javascript.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Json => {
-            let language = unsafe { tree_sitter_json() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string"].into_iter().collect(),
-                delimiter_tokens: vec![("{", "}"), ("[", "]")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/json.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Julia => {
-            let language = unsafe { tree_sitter_julia() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec![
-                    "string_literal",
-                    "prefixed_string_literal",
-                    "command_literal",
-                    "character_literal",
-                ]
-                .into_iter()
-                .collect(),
-                delimiter_tokens: vec![("{", "}"), ("[", "]"), ("(", ")")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/julia.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Kotlin => {
-            let language = unsafe { tree_sitter_kotlin() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["line_string_literal", "character_literal"]
-                    .into_iter()
-                    .collect(),
-                delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]"), ("<", ">")]
-                    .into_iter()
-                    .collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/kotlin.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Lua => {
-            let language = unsafe { tree_sitter_lua() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string"].into_iter().collect(),
-                delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]")]
-                    .into_iter()
-                    .collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/lua.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Make => {
-            let language = unsafe { tree_sitter_make() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["shell_text"].into_iter().collect(),
-                delimiter_tokens: vec![("(", ")")].into_iter().collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/make.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Nix => {
-            let language = unsafe { tree_sitter_nix() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string_expression", "indented_string_expression"]
-                    .into_iter()
-                    .collect(),
-                delimiter_tokens: vec![("{", "}"), ("[", "]")].into_iter().collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/nix.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        OCaml => {
-            let language = unsafe { tree_sitter_ocaml() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: OCAML_ATOM_NODES.iter().copied().collect(),
-                delimiter_tokens: vec![("(", ")"), ("[", "]"), ("{", "}")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/ocaml.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        OCamlInterface => {
-            let language = unsafe { tree_sitter_ocaml_interface() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: OCAML_ATOM_NODES.iter().copied().collect(),
-                delimiter_tokens: vec![("(", ")"), ("[", "]"), ("{", "}")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/ocaml.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Php => {
-            let language = unsafe { tree_sitter_php() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string", "encapsed_string"].into_iter().collect(),
-                delimiter_tokens: vec![("(", ")"), ("[", "]"), ("{", "}")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/php.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Perl => {
-            let language = unsafe { tree_sitter_perl() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec![
-                    "string_single_quoted",
-                    "string_double_quoted",
-                    "comments",
-                    "command_qx_quoted",
-                    "patter_matcher_m",
-                    "regex_pattern_qr",
-                    "transliteration_tr_or_y",
-                    "substitution_pattern_s",
-                ]
-                .into_iter()
-                .collect(),
-                delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/perl.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Python => {
-            let language = unsafe { tree_sitter_python() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string"].into_iter().collect(),
-                delimiter_tokens: vec![("(", ")"), ("[", "]"), ("{", "}")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/python.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Qml => {
-            let language = unsafe { tree_sitter_qmljs() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string", "template_string", "regex"]
-                    .into_iter()
-                    .collect(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("<", ">")],
-                highlight_query: ts::Query::new(
-                    language,
-                    concat!(
-                        include_str!("../../vendor/highlights/javascript.scm"),
-                        include_str!("../../vendor/highlights/typescript.scm"),
-                        include_str!("../../vendor/highlights/qmljs.scm"),
-                    ),
-                )
-                .unwrap(),
-            }
-        }
-        Ruby => {
-            let language = unsafe { tree_sitter_ruby() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string", "heredoc_body", "regex"]
-                    .into_iter()
-                    .collect(),
-                delimiter_tokens: vec![
-                    ("{", "}"),
-                    ("(", ")"),
-                    ("[", "]"),
-                    ("|", "|"),
-                    ("def", "end"),
-                    ("begin", "end"),
-                    ("class", "end"),
-                ],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/ruby.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Rust => {
-            let language = unsafe { tree_sitter_rust() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["char_literal", "string_literal"].into_iter().collect(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("|", "|"), ("<", ">")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/rust.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Scala => {
-            let language = unsafe { tree_sitter_scala() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string", "template_string"].into_iter().collect(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/scala.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Sql => {
-            let language = unsafe { tree_sitter_sql() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string", "identifier"].into_iter().collect(),
-                delimiter_tokens: vec![("(", ")")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/sql.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Swift => {
-            let language = unsafe { tree_sitter_swift() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: ["line_string_literal"].into(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("<", ">")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/swift.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Toml => {
-            let language = unsafe { tree_sitter_toml() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string"].into_iter().collect(),
-                delimiter_tokens: vec![("{", "}"), ("[", "]")],
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/toml.scm"),
-                )
-                .unwrap(),
-            }
-        }
-        Tsx => {
-            let language = unsafe { tree_sitter_tsx() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string", "template_string"].into_iter().collect(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("<", ">")],
-                highlight_query: ts::Query::new(
-                    language,
-                    concat!(
-                        include_str!("../../vendor/highlights/javascript.scm"),
-                        include_str!("../../vendor/highlights/typescript.scm"),
-                    ),
-                )
-                .unwrap(),
-            }
-        }
-        TypeScript => {
-            let language = unsafe { tree_sitter_typescript() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["string", "template_string", "regex"]
-                    .into_iter()
-                    .collect(),
-                delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("<", ">")],
-                highlight_query: ts::Query::new(
-                    language,
-                    concat!(
-                        include_str!("../../vendor/highlights/javascript.scm"),
-                        include_str!("../../vendor/highlights/typescript.scm"),
-                    ),
-                )
-                .unwrap(),
-            }
-        }
+        // Bash => {
+        //     let language = unsafe { tree_sitter_bash() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string", "raw_string", "heredoc_body"]
+        //             .into_iter()
+        //             .collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/bash.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // C => {
+        //     let language = unsafe { tree_sitter_c() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string_literal", "char_literal"].into_iter().collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/c.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // CPlusPlus => {
+        //     let language = unsafe { tree_sitter_cpp() };
+        //     TreeSitterConfig {
+        //         language,
+        //         // The C++ grammar extends the C grammar, so the node
+        //         // names are generally the same.
+        //         atom_nodes: vec!["string_literal", "char_literal"].into_iter().collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]"), ("<", ">")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             concat!(
+        //                 include_str!("../../vendor/highlights/c.scm"),
+        //                 include_str!("../../vendor/highlights/cpp.scm")
+        //             ),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Clojure => {
+        //     let language = unsafe { tree_sitter_clojure() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec![].into_iter().collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]")]
+        //             .into_iter()
+        //             .collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/clojure.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // CMake => {
+        //     let language = unsafe { tree_sitter_cmake() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["argument"].into_iter().collect(),
+        //         delimiter_tokens: vec![("(", ")")].into_iter().collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/cmake.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // CommonLisp => {
+        //     let language = unsafe { tree_sitter_commonlisp() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["str_lit", "char_lit"].into_iter().collect(),
+        //         delimiter_tokens: vec![("(", ")")],
+        //         highlight_query: ts::Query::new(language, "").unwrap(),
+        //     }
+        // }
+        // CSharp => {
+        //     let language = unsafe { tree_sitter_c_sharp() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec![
+        //             "string_literal",
+        //             "verbatim_string_literal",
+        //             "character_literal",
+        //         ]
+        //         .into_iter()
+        //         .collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/c-sharp.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Css => {
+        //     let language = unsafe { tree_sitter_css() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["integer_value", "float_value"].into_iter().collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/css.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Dart => {
+        //     let language = unsafe { tree_sitter_dart() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string_literal", "script_tag"].into_iter().collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("<", ">")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/dart.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // EmacsLisp => {
+        //     let language = unsafe { tree_sitter_elisp() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec![].into_iter().collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]")]
+        //             .into_iter()
+        //             .collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/elisp.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Elixir => {
+        //     let language = unsafe { tree_sitter_elixir() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string", "heredoc"].into_iter().collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("{", "}"), ("do", "end")]
+        //             .into_iter()
+        //             .collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/elixir.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Elm => {
+        //     let language = unsafe { tree_sitter_elm() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string_constant_expr"].into_iter().collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("[", "]"), ("(", ")")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/elm.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Elvish => {
+        //     let language = unsafe { tree_sitter_elvish() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: [].into(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("|", "|")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/elvish.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Gleam => {
+        //     let language = unsafe { tree_sitter_gleam() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: ["string"].into(),
+        //         delimiter_tokens: vec![("(", ")"), ("[", "]"), ("{", "}")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/gleam.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Go => {
+        //     let language = unsafe { tree_sitter_go() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["interpreted_string_literal", "raw_string_literal"]
+        //             .into_iter()
+        //             .collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("[", "]"), ("(", ")")]
+        //             .into_iter()
+        //             .collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/go.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Hack => {
+        //     let language = unsafe { tree_sitter_hack() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["prefixed_string", "heredoc"].into_iter().collect(),
+        //         delimiter_tokens: vec![("[", "]"), ("(", ")"), ("<", ">"), ("{", "}")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/hack.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Haskell => {
+        //     let language = unsafe { tree_sitter_haskell() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec![].into_iter().collect(),
+        //         delimiter_tokens: vec![("[", "]"), ("(", ")")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/haskell.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Hcl => {
+        //     let language = unsafe { tree_sitter_hcl() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string_lit", "heredoc_template"].into_iter().collect(),
+        //         delimiter_tokens: vec![
+        //             ("[", "]"),
+        //             ("(", ")"),
+        //             ("{", "}"),
+        //             ("%{", "}"),
+        //             ("%{~", "~}"),
+        //             ("${", "}"),
+        //         ],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/hcl.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Html => {
+        //     let language = unsafe { tree_sitter_html() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec![
+        //             "quoted_attribute_value",
+        //             "comment",
+        //             "raw_text",
+        //             "tag_name",
+        //             "text",
+        //         ]
+        //         .into_iter()
+        //         .collect(),
+        //         delimiter_tokens: vec![("<", ">"), ("<!", ">"), ("<!--", "-->")]
+        //             .into_iter()
+        //             .collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/html.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Janet => {
+        //     let language = unsafe { tree_sitter_janet_simple() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec![].into_iter().collect(),
+        //         delimiter_tokens: vec![
+        //             ("@{", "}"),
+        //             ("@(", ")"),
+        //             ("@[", "]"),
+        //             ("{", "}"),
+        //             ("(", ")"),
+        //             ("[", "]"),
+        //         ]
+        //         .into_iter()
+        //         .collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/janet_simple.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Java => {
+        //     let language = unsafe { tree_sitter_java() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec![].into_iter().collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/java.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // JavaScript | Jsx => {
+        //     let language = unsafe { tree_sitter_javascript() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string", "template_string", "regex"]
+        //             .into_iter()
+        //             .collect(),
+        //         delimiter_tokens: vec![
+        //             ("[", "]"),
+        //             ("(", ")"),
+        //             ("{", "}"),
+        //             // We may see a standalone < token in an expression
+        //             // like 1 < 2, but we should never see both a < and a
+        //             // > at the same level in JSX.
+        //             ("<", ">"),
+        //         ],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/javascript.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Json => {
+        //     let language = unsafe { tree_sitter_json() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string"].into_iter().collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("[", "]")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/json.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Julia => {
+        //     let language = unsafe { tree_sitter_julia() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec![
+        //             "string_literal",
+        //             "prefixed_string_literal",
+        //             "command_literal",
+        //             "character_literal",
+        //         ]
+        //         .into_iter()
+        //         .collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("[", "]"), ("(", ")")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/julia.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Kotlin => {
+        //     let language = unsafe { tree_sitter_kotlin() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["line_string_literal", "character_literal"]
+        //             .into_iter()
+        //             .collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]"), ("<", ">")]
+        //             .into_iter()
+        //             .collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/kotlin.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Lua => {
+        //     let language = unsafe { tree_sitter_lua() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string"].into_iter().collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]")]
+        //             .into_iter()
+        //             .collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/lua.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Make => {
+        //     let language = unsafe { tree_sitter_make() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["shell_text"].into_iter().collect(),
+        //         delimiter_tokens: vec![("(", ")")].into_iter().collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/make.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Nix => {
+        //     let language = unsafe { tree_sitter_nix() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string_expression", "indented_string_expression"]
+        //             .into_iter()
+        //             .collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("[", "]")].into_iter().collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/nix.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // OCaml => {
+        //     let language = unsafe { tree_sitter_ocaml() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: OCAML_ATOM_NODES.iter().copied().collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("[", "]"), ("{", "}")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/ocaml.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // OCamlInterface => {
+        //     let language = unsafe { tree_sitter_ocaml_interface() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: OCAML_ATOM_NODES.iter().copied().collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("[", "]"), ("{", "}")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/ocaml.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Php => {
+        //     let language = unsafe { tree_sitter_php() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string", "encapsed_string"].into_iter().collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("[", "]"), ("{", "}")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/php.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Perl => {
+        //     let language = unsafe { tree_sitter_perl() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec![
+        //             "string_single_quoted",
+        //             "string_double_quoted",
+        //             "comments",
+        //             "command_qx_quoted",
+        //             "patter_matcher_m",
+        //             "regex_pattern_qr",
+        //             "transliteration_tr_or_y",
+        //             "substitution_pattern_s",
+        //         ]
+        //         .into_iter()
+        //         .collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("{", "}"), ("[", "]")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/perl.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Python => {
+        //     let language = unsafe { tree_sitter_python() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string"].into_iter().collect(),
+        //         delimiter_tokens: vec![("(", ")"), ("[", "]"), ("{", "}")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/python.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Qml => {
+        //     let language = unsafe { tree_sitter_qmljs() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string", "template_string", "regex"]
+        //             .into_iter()
+        //             .collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("<", ">")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             concat!(
+        //                 include_str!("../../vendor/highlights/javascript.scm"),
+        //                 include_str!("../../vendor/highlights/typescript.scm"),
+        //                 include_str!("../../vendor/highlights/qmljs.scm"),
+        //             ),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Ruby => {
+        //     let language = unsafe { tree_sitter_ruby() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string", "heredoc_body", "regex"]
+        //             .into_iter()
+        //             .collect(),
+        //         delimiter_tokens: vec![
+        //             ("{", "}"),
+        //             ("(", ")"),
+        //             ("[", "]"),
+        //             ("|", "|"),
+        //             ("def", "end"),
+        //             ("begin", "end"),
+        //             ("class", "end"),
+        //         ],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/ruby.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Rust => {
+        //     let language = unsafe { tree_sitter_rust() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["char_literal", "string_literal"].into_iter().collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("|", "|"), ("<", ">")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/rust.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Scala => {
+        //     let language = unsafe { tree_sitter_scala() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string", "template_string"].into_iter().collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/scala.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Sql => {
+        //     let language = unsafe { tree_sitter_sql() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string", "identifier"].into_iter().collect(),
+        //         delimiter_tokens: vec![("(", ")")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/sql.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Swift => {
+        //     let language = unsafe { tree_sitter_swift() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: ["line_string_literal"].into(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("<", ">")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/swift.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Toml => {
+        //     let language = unsafe { tree_sitter_toml() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string"].into_iter().collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("[", "]")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/toml.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // Tsx => {
+        //     let language = unsafe { tree_sitter_tsx() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string", "template_string"].into_iter().collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("<", ">")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             concat!(
+        //                 include_str!("../../vendor/highlights/javascript.scm"),
+        //                 include_str!("../../vendor/highlights/typescript.scm"),
+        //             ),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
+        // TypeScript => {
+        //     let language = unsafe { tree_sitter_typescript() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["string", "template_string", "regex"]
+        //             .into_iter()
+        //             .collect(),
+        //         delimiter_tokens: vec![("{", "}"), ("(", ")"), ("[", "]"), ("<", ">")],
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             concat!(
+        //                 include_str!("../../vendor/highlights/javascript.scm"),
+        //                 include_str!("../../vendor/highlights/typescript.scm"),
+        //             ),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
         Yaml => {
             let language = unsafe { tree_sitter_yaml() };
             TreeSitterConfig {
@@ -770,23 +771,23 @@ pub fn from_language(language: guess::Language) -> TreeSitterConfig {
                 .unwrap(),
             }
         }
-        Zig => {
-            let language = unsafe { tree_sitter_zig() };
-            TreeSitterConfig {
-                language,
-                atom_nodes: vec!["STRINGLITERALSINGLE", "BUILTINIDENTIFIER"]
-                    .into_iter()
-                    .collect(),
-                delimiter_tokens: (vec![("{", "}"), ("[", "]"), ("(", ")")])
-                    .into_iter()
-                    .collect(),
-                highlight_query: ts::Query::new(
-                    language,
-                    include_str!("../../vendor/highlights/zig.scm"),
-                )
-                .unwrap(),
-            }
-        }
+        // Zig => {
+        //     let language = unsafe { tree_sitter_zig() };
+        //     TreeSitterConfig {
+        //         language,
+        //         atom_nodes: vec!["STRINGLITERALSINGLE", "BUILTINIDENTIFIER"]
+        //             .into_iter()
+        //             .collect(),
+        //         delimiter_tokens: (vec![("{", "}"), ("[", "]"), ("(", ")")])
+        //             .into_iter()
+        //             .collect(),
+        //         highlight_query: ts::Query::new(
+        //             language,
+        //             include_str!("../../vendor/highlights/zig.scm"),
+        //         )
+        //         .unwrap(),
+        //     }
+        // }
     }
 }
 
@@ -1229,27 +1230,27 @@ fn atom_from_cursor<'a>(
     vec![Syntax::new_atom(arena, position, content, highlight)]
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
 
-    /// Simple smoke test for tree-sitter parsing. Having a test also
-    /// ensures that this file has its coverage measured.
-    /// <https://github.com/mozilla/grcov/issues/617>
-    #[test]
-    fn test_parse() {
-        let arena = Arena::new();
-        let css_config = from_language(guess::Language::Css);
-        parse(&arena, ".foo {}", &css_config);
-    }
+//     /// Simple smoke test for tree-sitter parsing. Having a test also
+//     /// ensures that this file has its coverage measured.
+//     /// <https://github.com/mozilla/grcov/issues/617>
+//     #[test]
+//     fn test_parse() {
+//         let arena = Arena::new();
+//         let css_config = from_language(guess::Language::Css);
+//         parse(&arena, ".foo {}", &css_config);
+//     }
 
-    #[test]
-    fn test_parse_empty_file() {
-        let arena = Arena::new();
-        let config = from_language(guess::Language::EmacsLisp);
-        let res = parse(&arena, "", &config);
+//     #[test]
+//     fn test_parse_empty_file() {
+//         let arena = Arena::new();
+//         let config = from_language(guess::Language::EmacsLisp);
+//         let res = parse(&arena, "", &config);
 
-        let expected: Vec<&Syntax> = vec![];
-        assert_eq!(res, expected);
-    }
-}
+//         let expected: Vec<&Syntax> = vec![];
+//         assert_eq!(res, expected);
+//     }
+// }
