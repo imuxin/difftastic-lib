@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["io_lifetimes"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.57.0/std/os/fd/raw/trait.FromRawFd.html\" title=\"trait std::os::fd::raw::FromRawFd\">FromRawFd</a> for <a class=\"struct\" href=\"io_lifetimes/struct.OwnedFd.html\" title=\"struct io_lifetimes::OwnedFd\">OwnedFd</a>","synthetic":false,"types":["io_lifetimes::types::OwnedFd"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

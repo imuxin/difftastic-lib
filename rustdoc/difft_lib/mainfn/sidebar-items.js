@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["diff_file","Print a diff between two files."],["mainfn","The entrypoint."],["print_diff_result",""]]});

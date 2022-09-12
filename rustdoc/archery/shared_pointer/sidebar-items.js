@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["kind",""]],"struct":[["SharedPointer","Pointer to shared data with reference-counting."]]});

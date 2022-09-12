@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["mainfn","Difftastic is a syntactic diff tool."],["options","CLI option parsing."]]});

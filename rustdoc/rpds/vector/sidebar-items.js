@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["IterPtr",""],["Vector","A persistent vector with structural sharing."]],"type":[["Iter",""],["VectorSync",""]]});
