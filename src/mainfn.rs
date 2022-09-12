@@ -197,7 +197,7 @@ fn replace_tabs(src: &str, tab_width: usize) -> String {
 }
 
 /// Print a diff between two files.
-fn diff_file(
+pub fn diff_file(
     lhs_display_path: &str,
     rhs_display_path: &str,
     lhs_path: &Path,
@@ -411,7 +411,7 @@ fn diff_directories<'a>(
     })
 }
 
-fn print_diff_result(display_options: &DisplayOptions, summary: &DiffResult) {
+pub fn print_diff_result(display_options: &DisplayOptions, summary: &DiffResult) {
     match (&summary.lhs_src, &summary.rhs_src) {
         (FileContent::Text(lhs_src), FileContent::Text(rhs_src)) => {
             let opposite_to_lhs = opposite_positions(&summary.lhs_positions);

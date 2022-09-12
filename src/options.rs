@@ -6,7 +6,7 @@ use atty::Stream;
 use clap::{crate_authors, crate_description, crate_version, Arg, Command};
 use const_format::formatcp;
 
-use crate::{display::style::BackgroundColor, parse::guess_language};
+pub use crate::{display::style::BackgroundColor, parse::guess_language};
 
 pub const DEFAULT_BYTE_LIMIT: usize = 1_000_000;
 // Chosen experimentally: this is sufficiently many for all the sample
@@ -385,7 +385,7 @@ pub fn parse_args() -> Mode {
 
 /// Choose the display width: try to autodetect, or fall back to a
 /// sensible default.
-fn detect_display_width() -> usize {
+pub fn detect_display_width() -> usize {
     // terminal_size is actively maintained, but only considers
     // stdout. This is a problem inside git, where stderr is a TTY
     // with a size but stdout is piped to less.

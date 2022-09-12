@@ -184,8 +184,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0e25ea47919b1560c4e3b7fe0aaab9becf5b84a10325ddf7db0f0ba5e1026499"
 
 [[package]]
-name = "difftastic"
-version = "0.36.0"
+name = "difftastic-lib"
+version = "0.0.1"
 dependencies = [
  "atty",
  "bumpalo",

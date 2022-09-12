@@ -9,9 +9,10 @@ mod display;
 mod files;
 mod line_parser;
 mod lines;
-mod options;
 mod parse;
 mod positions;
 mod summary;
 
 pub mod mainfn;
+pub mod options;
+pub use mainfn::{diff_file, print_diff_result};

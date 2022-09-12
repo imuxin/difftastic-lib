@@ -361,6 +361,23 @@ fn apply_header_color(s: &str, use_color: bool, background: BackgroundColor) -> 
     }
 }
 
+#[allow(unused_variables)]
+pub fn header2(
+    lhs_display_path: &str,
+    rhs_display_path: &str,
+    hunk_num: usize,
+    hunk_total: usize,
+    language_name: &str,
+    display_options: &DisplayOptions,
+) -> String {
+    let divider = if hunk_total == 1 {
+        "".to_owned()
+    } else {
+        format!("{}/{} --- ", hunk_num, hunk_total)
+    };
+    format!("--- {}{}", divider, language_name)
+}
+
 pub fn header(
     lhs_display_path: &str,
     rhs_display_path: &str,

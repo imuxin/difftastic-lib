@@ -384,7 +384,7 @@ pub fn print(
     for (i, hunk) in hunks.iter().enumerate() {
         println!(
             "{}",
-            style::header(
+            style::header2(
                 lhs_display_path,
                 rhs_display_path,
                 i + 1,
